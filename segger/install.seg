@@ -1,0 +1,10 @@
+device nrf51822_xxac
+power on
+rx 5
+r
+speed 1000
+r
+loadfile ../_build/jewelbot_s130_xxac.hex
+r
+g
+exit
