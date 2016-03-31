@@ -8,5 +8,5 @@ typedef enum
 } jewelbot_data_storage_t;
 void friend_storage_init(void);
 void save_number_of_friends(uint8_t * num_of_friends);
-void load_number_of_friends(uint8_t * number_to_load);
+void load_number_of_friends(uint32_t * number_to_load);
 #endif

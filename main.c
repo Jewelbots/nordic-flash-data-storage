@@ -38,9 +38,9 @@ static void scheduler_init(void)
 int main(void)
 {
 	scheduler_init();
-	uint8_t num_of_friends = 7;
+	uint8_t num_of_friends = 3;
 	friend_storage_init();
-	uint8_t num_to_load;
+	uint32_t num_to_load;
 	load_number_of_friends(&num_to_load);
 	SEGGER_RTT_printf(0, "number to load was: %u\n", num_to_load);
 	save_number_of_friends(&num_of_friends);
