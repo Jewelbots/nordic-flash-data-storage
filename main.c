@@ -10,6 +10,7 @@
 #include "nordic_common.h"
 #include "nrf.h"
 #include "nrf_delay.h"
+#include "nrf_sdm.h"
 #include "nrf_soc.h"
 #include "nrf_gpio.h"
 #include "nrf_log.h"
@@ -35,18 +36,25 @@ static void scheduler_init(void)
 	APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
 }
 
+
+
 int main(void)
 {
+	SOFTDEVICE_HANDLER_APPSH_INIT(NRF_CLOCK_LFCLKSRC_RC_250_PPM_TEMP_4000MS_CALIBRATION, true);
 	scheduler_init();
-	uint8_t num_of_friends = 3;
+	uint32_t num_of_friends = 3;
 	friend_storage_init();
 	uint32_t num_to_load;
+	save_number_of_friends(&num_of_friends);
+	nrf_delay_ms(1000);
 	load_number_of_friends(&num_to_load);
 	SEGGER_RTT_printf(0, "number to load was: %u\n", num_to_load);
-	save_number_of_friends(&num_of_friends);
-	
+	//save_number_of_friends(&num_of_friends);
+	nrf_delay_ms(1000);
 	for(;;) {
-		app_sched_execute();
+		nrf_delay_ms(10000);
+		ret_code_t err_code = sd_app_evt_wait();
+		//APP_ERROR_CHECK(err_code);
 	}
 }
 
