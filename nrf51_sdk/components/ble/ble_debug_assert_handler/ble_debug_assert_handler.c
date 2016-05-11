@@ -15,7 +15,6 @@
 #include "nrf.h"
 #include "ble_error_log.h"
 #include "nordic_common.h"
-#include "SEGGER_RTT.h"
 
 #define MAX_LENGTH_FILENAME 128  /**< Max length of filename to copy for the debug error handlier. */
 
@@ -33,22 +32,21 @@ void ble_debug_assert_handler(uint32_t error_code, uint32_t line_num, const uint
     s_file_name[MAX_LENGTH_FILENAME - 1] = '\0';
     s_line_num                           = line_num;
     s_error_code                         = error_code;
-    //UNUSED_VARIABLE(s_file_name);
-    //UNUSED_VARIABLE(s_line_num);
-    //UNUSED_VARIABLE(s_error_code);
+    UNUSED_VARIABLE(s_file_name);
+    UNUSED_VARIABLE(s_line_num);
+    UNUSED_VARIABLE(s_error_code);
 
     // WARNING: The PRIMASK register is set to disable ALL interrups during writing the error log.
     // 
     // Do not use __disable_irq() in normal operation.
     __disable_irq();
-		SEGGER_RTT_printf(0, "File: %s, Line Number: %d, 0x%2x\n ",s_file_name,s_line_num, s_error_code);
+
     // This function will write error code, filename, and line number to the flash.
     // In addition, the Cortex-M0 stack memory will also be written to the flash.
     //(void) ble_error_log_write(error_code, p_file_name, line_num);
 
     // For debug purposes, this function never returns.
     // Attach a debugger for tracing the error cause.
-		
     for (;;)
     {
         // Do nothing.

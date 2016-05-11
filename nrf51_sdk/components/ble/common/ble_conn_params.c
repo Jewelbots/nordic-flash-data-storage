@@ -17,7 +17,6 @@
 #include "app_timer.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
-//#include "SEGGER_RTT.h"
 
 
 static ble_conn_params_init_t m_conn_params_config;     /**< Configuration as specified by the application. */
@@ -109,7 +108,6 @@ uint32_t ble_conn_params_init(const ble_conn_params_init_t * p_init)
 
         // Set the connection params in stack
         err_code = sd_ble_gap_ppcp_set(&m_preferred_conn_params);
-				
         if (err_code != NRF_SUCCESS)
         {
             return err_code;

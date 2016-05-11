@@ -18,6 +18,13 @@
 #include "friend_data_storage.h"
 #include "SEGGER_RTT.h"
 
+
+#define NRF_CLOCK_LFCLKSRC      {.source        = NRF_CLOCK_LF_SRC_XTAL,            \
+                                 .rc_ctiv       = 0,                                \
+                                 .rc_temp_ctiv  = 0,                                \
+                                 .xtal_accuracy = NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM}
+
+
 #define APP_TIMER_PRESCALER         0                                  /**< Value of the RTC1 PRESCALER register. */
 
 #define SCHED_MAX_EVENT_DATA_SIZE    ((CEIL_DIV(MAX(                                   \
@@ -39,8 +46,10 @@ static void ble_stack_init(void)
 {
     uint32_t err_code;
 
-    // Initialize the SoftDevice handler module.
-    SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_RC_250_PPM_1000MS_CALIBRATION, NULL);
+    nrf_clock_lf_cfg_t clock_lf_cfg = NRF_CLOCK_LFCLKSRC;
+    
+    // Initialize the SoftDevice handler module.	
+    SOFTDEVICE_HANDLER_INIT(&clock_lf_cfg, NULL);
 
 #if defined(S110) || defined(S130) || defined(S310)  || defined(S132)
     // Enable BLE stack.
@@ -50,7 +59,7 @@ static void ble_stack_init(void)
     ble_enable_params.gatts_enable_params.attr_tab_size   = BLE_GATTS_ATTR_TAB_SIZE_DEFAULT;
 #endif
     ble_enable_params.gatts_enable_params.service_changed = 0;
-    err_code = sd_ble_enable(&ble_enable_params);
+    err_code = softdevice_enable(&ble_enable_params);
     SEGGER_RTT_printf(0, "ble_stack_enable error code is: %u\n", err_code);
     APP_ERROR_CHECK(err_code);
 #endif
@@ -96,7 +105,6 @@ int main(void)
   ble_stack_init();
 	friend_storage_init();
   nrf_delay_ms(1000); //wait because fds is doing stuff.
- 	SEGGER_RTT_WriteString(0, "we got here2!\n");
   print_friends();
   load_friends(&friends_list);
   print_friends();

@@ -20,12 +20,17 @@
  */
 
 #include "nrf.h"
+#include <stdio.h>
 #include "app_error.h"
-#include "compiler_abstraction.h"
 #include "nordic_common.h"
-#include "ble_debug_assert_handler.h"
-#include <string.h>
-#include "SEGGER_RTT.h"
+#include "sdk_errors.h"
+#include "nrf_log.h"
+
+#ifdef DEBUG
+#include "bsp.h"
+#endif
+
+
 
 /**@brief Function for error handling, which is called when an error has occurred.
  *
@@ -35,62 +40,85 @@
  * @param[in] error_code  Error code supplied to the handler.
  * @param[in] line_num    Line number where the handler is called.
  * @param[in] p_file_name Pointer to the file name.
- *
- * Function is implemented as weak so that it can be overwritten by custom application error handler
- * when needed.
  */
 
 /*lint -save -e14 */
-__WEAK void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p_file_name)
+void app_error_handler(ret_code_t error_code, uint32_t line_num, const uint8_t * p_file_name)
 {
-    // On assert, the system can only recover with a reset.
-//#ifndef DEBUG
-//    NVIC_SystemReset();
-//#else
-uint32_t m_error_code;
-uint32_t m_line_num;
-const uint8_t * m_p_file_name;	
-    // This call can be used for debug purposes during application development.
-    // @note CAUTION: Activating this code will write the stack to flash on an error.
-    //                This function should NOT be used in a final product.
-    //                It is intended STRICTLY for development/debugging purposes.
-    //                The flash write will happen EVEN if the radio is active, thus interrupting
-    //                any communication.
-    //                Use with care. Uncomment the line below to use.
-    //ble_debug_assert_handler(error_code, line_num, p_file_name);
-		static volatile uint8_t  s_file_name[128];
-    static volatile uint16_t s_line_num;
-    static volatile uint32_t s_error_code;
+    error_info_t error_info =
+    {
+        .line_num    = line_num,
+        .p_file_name = p_file_name,
+        .err_code    = error_code,
+    };
+    app_error_fault_handler(NRF_FAULT_ID_SDK_ERROR, 0, (uint32_t)(&error_info));
 
-    strncpy((char *)s_file_name, (const char *)p_file_name, 127);
-    s_file_name[128 - 1] = '\0';
-    s_line_num                           = line_num;
-    s_error_code                         = error_code;
-    //UNUSED_VARIABLE(s_file_name);
-    //UNUSED_VARIABLE(s_line_num);
-    //UNUSED_VARIABLE(s_error_code);
+    UNUSED_VARIABLE(error_info);
+}
 
-    // WARNING: The PRIMASK register is set to disable ALL interrups during writing the error log.
-    // 
-    // Do not use __disable_irq() in normal operation.
-    __disable_irq();
-		SEGGER_RTT_printf(0, "File: %s, Line Number: %d, 0x%2x\n ",s_file_name,s_line_num, s_error_code);
+/*lint -save -e14 */
+void app_error_handler_bare(ret_code_t error_code)
+{
+    error_info_t error_info =
+    {
+        .line_num    = 0,
+        .p_file_name = NULL,
+        .err_code    = error_code,
+    };
+    app_error_fault_handler(NRF_FAULT_ID_SDK_ERROR, 0, (uint32_t)(&error_info));
+
+    UNUSED_VARIABLE(error_info);
+}
+
+
+void app_error_save_and_stop(uint32_t id, uint32_t pc, uint32_t info)
+{
+    /* static error variables - in order to prevent removal by optimizers */
+    static volatile struct
+    {
+        uint32_t        fault_id;
+        uint32_t        pc;
+        uint32_t        error_info;
+        assert_info_t * p_assert_info;
+        error_info_t  * p_error_info;
+        ret_code_t      err_code;
+        uint32_t        line_num;
+        const uint8_t * p_file_name;
+    } m_error_data = {0};
 
     // The following variable helps Keil keep the call stack visible, in addition, it can be set to
     // 0 in the debugger to continue executing code after the error check.
     volatile bool loop = true;
     UNUSED_VARIABLE(loop);
 
-    m_error_code = error_code;
-    m_line_num = line_num;
-    m_p_file_name = p_file_name;
+    m_error_data.fault_id   = id;
+    m_error_data.pc         = pc;
+    m_error_data.error_info = info;
 
-    UNUSED_VARIABLE(m_error_code);
-    UNUSED_VARIABLE(m_line_num);
-    UNUSED_VARIABLE(m_p_file_name);
+    switch (id)
+    {
+        case NRF_FAULT_ID_SDK_ASSERT:
+            m_error_data.p_assert_info = (assert_info_t *)info;
+            m_error_data.line_num      = m_error_data.p_assert_info->line_num;
+            m_error_data.p_file_name   = m_error_data.p_assert_info->p_file_name;
+            break;
+
+        case NRF_FAULT_ID_SDK_ERROR:
+            m_error_data.p_error_info = (error_info_t *)info;
+            m_error_data.err_code     = m_error_data.p_error_info->err_code;
+            m_error_data.line_num     = m_error_data.p_error_info->line_num;
+            m_error_data.p_file_name  = m_error_data.p_error_info->p_file_name;
+            break;
+    }
+
+    UNUSED_VARIABLE(m_error_data);
+
+    // If printing is disrupted, remove the irq calls, or set the loop variable to 0 in the debugger.
     __disable_irq();
 
-    //while(loop);
-//#endif // DEBUG
+    while(loop);
+
+    __enable_irq();
 }
+
 /*lint -restore */

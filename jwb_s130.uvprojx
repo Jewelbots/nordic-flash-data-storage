@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define>SOFTDEVICE_PRESENT NRF51 BLE_STACK_SUPPORT_REQD S130 SIMULATE_BATTERY</Define>
               <Undefine></Undefine>
-              <IncludePath>.\segger\RTT;.\nrf51_sdk\components;.\nrf51_sdk\components\ble;.\nrf51_sdk\components\ble\ble_advertising;.\nrf51_sdk\components\ble\ble_debug_assert_handler;.\nrf51_sdk\components\ble\ble_error_log;.\nrf51_sdk\components\ble\ble_radio_notification;.\nrf51_sdk\components\ble\ble_services;.\nrf51_sdk\components\ble\common;.\nrf51_sdk\components\ble\peer_manager;.\nrf51_sdk\components\device;.\nrf51_sdk\components\drivers_nrf;.\nrf51_sdk\components\drivers_nrf\ble_flash;.\nrf51_sdk\components\drivers_nrf\clock;.\nrf51_sdk\components\drivers_nrf\common;.\nrf51_sdk\components\drivers_nrf\config;.\nrf51_sdk\components\drivers_nrf\delay;.\nrf51_sdk\components\drivers_nrf\gpiote;.\nrf51_sdk\components\drivers_nrf\hal;.\nrf51_sdk\components\drivers_nrf\pstorage\config;.\nrf51_sdk\components\drivers_nrf\pstorage;.\nrf51_sdk\components\drivers_nrf\radio_config;.\nrf51_sdk\components\drivers_nrf\rng;.\nrf51_sdk\components\drivers_nrf\spi_master;.\nrf51_sdk\components\drivers_nrf\timer;.\nrf51_sdk\components\drivers_nrf\twi_master;.\nrf51_sdk\components\drivers_nrf\uart;.\nrf51_sdk\components\drivers_nrf\wdt;.\nrf51_sdk\components\libraries;.\nrf51_sdk\components\libraries\button;.\nrf51_sdk\components\libraries\gpiote;.\nrf51_sdk\components\libraries\hci;.\nrf51_sdk\components\libraries\hci\config;.\nrf51_sdk\components\libraries\ic_info;.\nrf51_sdk\components\libraries\scheduler;.\nrf51_sdk\components\libraries\timer;.\nrf51_sdk\components\libraries\twi;.\nrf51_sdk\components\libraries\uart;.\nrf51_sdk\components\libraries\util;.\nrf51_sdk\components\softdevice\s130\hex;.\nrf51_sdk\components\softdevice\s130\headers;.\nrf51_sdk\components\softdevice\common;.\nrf51_sdk\components\softdevice;.\nrf51_sdk\components\softdevice\common\softdevice_handler;.\nrf51_sdk\components\ble\ble_db_discovery;.\nrf51_sdk\components\libraries\fds;.\nrf51_sdk\components\libraries\fstorage;.\nrf51_sdk\components\libraries\hci;.\nrf51_sdk\components\libraries\mem_manager;.\nrf51_sdk\components\libraries\trace;.\nrf51_sdk\components\libraries\crc16;.\nrf51_sdk\components\libraries\experimental_section_vars;.\</IncludePath>
+              <IncludePath>.\segger\RTT;.\nrf51_sdk\components;.\nrf51_sdk\components\ble;.\nrf51_sdk\components\ble\ble_advertising;.\nrf51_sdk\components\ble\ble_debug_assert_handler;.\nrf51_sdk\components\ble\ble_error_log;.\nrf51_sdk\components\ble\ble_radio_notification;.\nrf51_sdk\components\ble\ble_services;.\nrf51_sdk\components\ble\common;.\nrf51_sdk\components\ble\peer_manager;.\nrf51_sdk\components\device;.\nrf51_sdk\components\drivers_nrf;.\nrf51_sdk\components\drivers_nrf\ble_flash;.\nrf51_sdk\components\drivers_nrf\clock;.\nrf51_sdk\components\drivers_nrf\common;.\nrf51_sdk\components\drivers_nrf\config;.\nrf51_sdk\components\drivers_nrf\delay;.\nrf51_sdk\components\drivers_nrf\gpiote;.\nrf51_sdk\components\drivers_nrf\hal;.\nrf51_sdk\components\drivers_nrf\pstorage\config;.\nrf51_sdk\components\drivers_nrf\pstorage;.\nrf51_sdk\components\drivers_nrf\radio_config;.\nrf51_sdk\components\drivers_nrf\rng;.\nrf51_sdk\components\drivers_nrf\spi_master;.\nrf51_sdk\components\drivers_nrf\timer;.\nrf51_sdk\components\drivers_nrf\twi_master;.\nrf51_sdk\components\drivers_nrf\uart;.\nrf51_sdk\components\drivers_nrf\wdt;.\nrf51_sdk\components\libraries;.\nrf51_sdk\components\libraries\button;.\nrf51_sdk\components\libraries\gpiote;.\nrf51_sdk\components\libraries\hci;.\nrf51_sdk\components\libraries\hci\config;.\nrf51_sdk\components\libraries\ic_info;.\nrf51_sdk\components\libraries\scheduler;.\nrf51_sdk\components\libraries\timer;.\nrf51_sdk\components\libraries\twi;.\nrf51_sdk\components\libraries\uart;.\nrf51_sdk\components\libraries\util;.\nrf51_sdk\components\softdevice\s130\hex;.\nrf51_sdk\components\softdevice\s130\headers;.\nrf51_sdk\components\softdevice\common;.\nrf51_sdk\components\softdevice;.\nrf51_sdk\components\softdevice\common\softdevice_handler;.\nrf51_sdk\components\ble\ble_db_discovery;.\nrf51_sdk\components\libraries\fds;.\nrf51_sdk\components\libraries\fstorage;.\nrf51_sdk\components\libraries\hci;.\nrf51_sdk\components\libraries\mem_manager;.\nrf51_sdk\components\libraries\trace;.\nrf51_sdk\components\libraries\crc16;.\nrf51_sdk\components\libraries\experimental_section_vars;.\;.\nrf51_sdk\components\libraries\fds\config;.\nrf51_sdk\components\libraries\fstorage\config;.\nrf51_sdk\components\libraries\fstorage;.\nrf51_sdk\components\libraries\util</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -610,16 +610,6 @@
               <FilePath>.\nrf51_sdk\components\libraries\timer\app_timer_appsh.c</FilePath>
             </File>
             <File>
-              <FileName>fstorage.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\nrf51_sdk\components\libraries\fstorage\fstorage.c</FilePath>
-            </File>
-            <File>
-              <FileName>nrf51_ic_info.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\nrf51_sdk\components\libraries\ic_info\nrf51_ic_info.c</FilePath>
-            </File>
-            <File>
               <FileName>app_error.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\nrf51_sdk\components\libraries\util\app_error.c</FilePath>
@@ -648,6 +638,16 @@
               <FileName>fds.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\nrf51_sdk\components\libraries\fds\fds.c</FilePath>
+            </File>
+            <File>
+              <FileName>fstorage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\nrf51_sdk\components\libraries\fstorage\fstorage.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_error_weak.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\nrf51_sdk\components\libraries\util\app_error_weak.c</FilePath>
             </File>
           </Files>
         </Group>
