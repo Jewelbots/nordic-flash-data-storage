@@ -59,7 +59,7 @@ void add_friend(friends_list_t * friends_list) {
     .color_index = 1                 /**< See @ref . */
   };
   uint8_t current_friends = friends_list->num_of_friends;
-  memcpy(&(friends_list[friends_list->num_of_friends]), &friend_to_add, sizeof(friend_t));
+  memcpy(&(friends_list->friends[friends_list->num_of_friends]), &friend_to_add, sizeof(friend_t));
   friends_list->num_of_friends = current_friends + 1;
 }
 void initialize_friends_list_in_flash(friends_list_t * friends_list) {
