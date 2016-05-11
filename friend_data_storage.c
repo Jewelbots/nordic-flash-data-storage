@@ -56,7 +56,7 @@ void add_friend(friends_list_t * friends_list) {
     .color_index = 1                 /**< See @ref . */
   };
   uint8_t current_friends = friends_list->num_of_friends;
-  memcpy(&(friends_list[friends_list->num_of_friends]), &friend_to_add, sizeof(friend_t));
+  memcpy(&(friends_list->friends[friends_list->num_of_friends]), &friend_to_add, sizeof(friend_t));
   friends_list->num_of_friends = current_friends + 1;
 }
 void initialize_friends_list_in_flash(friends_list_t * friends_list) {
@@ -74,7 +74,7 @@ void initialize_friends_list_in_flash(friends_list_t * friends_list) {
     fds_record_t record;
     record.file_id = DATA_STORAGE_TYPE_ID;
     record.key = DATA_STORAGE_INSTANCE_ID;
-    
+
     uint16_t max_length =  sizeof(friends_list_t);
     uint16_t length_words = max_length / 4;
     chunk.length_words = length_words; //number of 4-byte word chunks of color_friends_t
@@ -91,7 +91,7 @@ void initialize_friends_list_in_flash(friends_list_t * friends_list) {
 
 void save_friends(friends_list_t * friends_list) {
 	static fds_record_chunk_t chunk;
-	
+
 	fds_record_t record;
   record.file_id = DATA_STORAGE_TYPE_ID;
   record.key = DATA_STORAGE_INSTANCE_ID;
