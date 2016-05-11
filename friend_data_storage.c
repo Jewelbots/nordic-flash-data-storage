@@ -8,6 +8,9 @@
 #define DATA_STORAGE_TYPE_ID            0x0021
 #define SENTINEL_VALUE                  0xEE
 
+static uint8_t write_flag=0;
+static uint8_t clear_flag=0;
+static uint8_t gc_flag=0;
 
 static void fds_evt_handler(ret_code_t          result,
                             fds_cmd_id_t        cmd,
@@ -26,17 +29,20 @@ if (result != 0) {
 
         case FDS_CMD_UPDATE:
             SEGGER_RTT_printf(0, "FDS_CMD_UPDATE: result: %u, instance: %02x, type: %02x\n", result, record_key.instance, record_key.type);
-            //err_code = fds_gc();
+            //update_flag=1;
+						//err_code = fds_gc();
             //APP_ERROR_CHECK(err_code);
             break;
         case FDS_CMD_WRITE:
             SEGGER_RTT_printf(0, "FDS_CMD_WRITE: result: %u, instance: %02x, type: %02x\n", result, record_key.instance, record_key.type);
-            //err_code = fds_gc();
+            write_flag=1;
+						//err_code = fds_gc();
             //APP_ERROR_CHECK(err_code);
             break;
 
         case FDS_CMD_CLEAR:
-            SEGGER_RTT_WriteString(0, "FDS_CMD_CLEAR_INST\n");
+            SEGGER_RTT_WriteString(0, "FDS_CMD_CLEAR\n");
+						clear_flag=1;
             break;
 
         case FDS_CMD_CLEAR_INST:
@@ -47,6 +53,7 @@ if (result != 0) {
 
         case FDS_CMD_GC:
             SEGGER_RTT_WriteString(0, "GC FDS\n");
+						gc_flag=1;
             break;
 
         default:
@@ -59,14 +66,16 @@ void add_friend(friends_list_t * friends_list) {
     .color_index = 1                 /**< See @ref . */
   };
   uint8_t current_friends = friends_list->num_of_friends;
-  memcpy(&(friends_list[friends_list->num_of_friends]), &friend_to_add, sizeof(friend_t));
+  memcpy(&(friends_list->friends[friends_list->num_of_friends]), &friend_to_add, sizeof(friend_t));
   friends_list->num_of_friends = current_friends + 1;
+	SEGGER_RTT_printf(0, "Added a friend, number of friends: %u\n", friends_list->num_of_friends);
 }
 void initialize_friends_list_in_flash(friends_list_t * friends_list) {
 	fds_record_chunk_t chunk;
 	fds_record_desc_t friend_list_descriptor;
   fds_find_token_t tok;
 
+	write_flag=0;
   bool has_records = false;
 
   while(fds_find(DATA_STORAGE_TYPE_ID, DATA_STORAGE_INSTANCE_ID, &friend_list_descriptor, &tok) == NRF_SUCCESS) {
@@ -85,6 +94,7 @@ void initialize_friends_list_in_flash(friends_list_t * friends_list) {
     err_code = fds_write(&friend_list_descriptor, key, 1, &chunk);
     SEGGER_RTT_printf(0, "INITIAL WRITE FRIENDS: max_length: %u, length_words: %u, Error Code was: %u\n", max_length, length_words, err_code);
     APP_ERROR_CHECK(err_code);
+		while(write_flag==0);
   }
 }
 
@@ -93,8 +103,14 @@ void save_friends(friends_list_t * friends_list) {
 	static fds_record_key_t key;
 	static fds_record_chunk_t chunk;
 	static fds_record_desc_t friend_list_descriptor;
+	static fds_find_token_t tok;
 	key.type = DATA_STORAGE_TYPE_ID;
 	key.instance = DATA_STORAGE_INSTANCE_ID;
+	
+	write_flag=0;
+	clear_flag=0;
+	gc_flag=0;
+
 
 	chunk.p_data = friends_list;
   SEGGER_RTT_printf(0, "size should be storing for max_length: %u\n", sizeof(friends_list_t));
@@ -102,9 +118,23 @@ void save_friends(friends_list_t * friends_list) {
 	uint16_t length_words = max_length / 4;
 	chunk.length_words = length_words; //number of 4-byte word chunks of color_friends_t
 	uint32_t err_code;
-  err_code = fds_update(&friend_list_descriptor, key, 1, &chunk);
-  SEGGER_RTT_printf(0, "UPDATE FRIENDS: max_length: %u, length_words: %u, Error Code was: %u\n", max_length, length_words, err_code);
+  //err_code = fds_update(&friend_list_descriptor, key, 1, &chunk);
+  //SEGGER_RTT_printf(0, "UPDATE FRIENDS: max_length: %u, length_words: %u, Error Code was: %u\n", max_length, length_words, err_code);
+  //APP_ERROR_CHECK(err_code);
+	while(fds_find(DATA_STORAGE_TYPE_ID, DATA_STORAGE_INSTANCE_ID, &friend_list_descriptor, &tok) == NRF_SUCCESS) {
+			err_code = fds_clear(&friend_list_descriptor);
+			SEGGER_RTT_WriteString(0, "Clear existing record.\n");
+			APP_ERROR_CHECK(err_code);
+			while(clear_flag==0);
+	}
+	err_code = fds_gc();
   APP_ERROR_CHECK(err_code);
+	while(gc_flag==0);
+	SEGGER_RTT_WriteString(0, "Run Garbage Collect.\n");
+	err_code = fds_write(&friend_list_descriptor, key, 1, &chunk);
+	SEGGER_RTT_printf(0, "WRITING UPDATED FRIENDS: max_length: %u, length_words: %u, Error Code was: %u\n", max_length, length_words, err_code);
+	APP_ERROR_CHECK(err_code);
+	while(write_flag==0);
 }
 
 void load_friends(friends_list_t * friends_to_load)
