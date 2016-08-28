@@ -19,10 +19,10 @@
 #include "SEGGER_RTT.h"
 
 
-#define NRF_CLOCK_LFCLKSRC      {.source        = NRF_CLOCK_LF_SRC_XTAL,            \
-                                 .rc_ctiv       = 0,                                \
-                                 .rc_temp_ctiv  = 0,                                \
-                                 .xtal_accuracy = NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM}
+#define NRF_CLOCK_LFCLKSRC      {.source        = NRF_CLOCK_LF_SRC_RC,            \
+                                 .rc_ctiv       = 16,                                \
+                                 .rc_temp_ctiv  = 2,                                \
+                                 .xtal_accuracy = NRF_CLOCK_LF_XTAL_ACCURACY_250_PPM}
 
 
 #define APP_TIMER_PRESCALER         0                                  /**< Value of the RTC1 PRESCALER register. */
@@ -125,8 +125,10 @@ int main(void)
     add_friend(&friends_list);
     nrf_delay_ms(10000);
     save_friends(&friends_list);
+#ifndef RTT
 		ret_code_t err_code = sd_app_evt_wait();
 		APP_ERROR_CHECK(err_code);
+#endif
 	}
 }
 
