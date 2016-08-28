@@ -22,12 +22,12 @@ if (p_fds_evt->result != 0) {
             break;
 
         case FDS_EVT_UPDATE:
-            SEGGER_RTT_printf(0, "FDS_EVT_UPDATE: result: %u, record_key: %02x, record_id: %02x\n", p_fds_evt->result, p_fds_evt->write.record_key, p_fds_evt->write.record_id);
+					SEGGER_RTT_printf(0, "FDS_EVT_UPDATE: result: %u, record_key: %02x, record_id: %02x, file_id: %02x\n", p_fds_evt->result, p_fds_evt->write.record_key, p_fds_evt->write.record_id, p_fds_evt->write.file_id);
             //err_code = fds_gc();
             //APP_ERROR_CHECK(err_code);
             break;
         case FDS_EVT_WRITE:
-            SEGGER_RTT_printf(0, "FDS_EVT_WRITE: result: %u, record_key: %02x, record_id: %02x\n", p_fds_evt->result, p_fds_evt->write.record_key, p_fds_evt->write.record_id);
+            SEGGER_RTT_printf(0, "FDS_EVT_WRITE: result: %u, record_key: %02x, record_id: %02x, file_id: %02x\n", p_fds_evt->result, p_fds_evt->write.record_key, p_fds_evt->write.record_id, p_fds_evt->write.file_id);
             //err_code = fds_gc();
             //APP_ERROR_CHECK(err_code);
             break;
@@ -61,7 +61,7 @@ void add_friend(friends_list_t * friends_list) {
 }
 void initialize_friends_list_in_flash(friends_list_t * friends_list) {
 	static fds_record_chunk_t chunk;
-	fds_record_desc_t friend_list_descriptor;
+	//fds_record_desc_t friend_list_descriptor;
   fds_find_token_t tok;
 
   bool has_records = false;

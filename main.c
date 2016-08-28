@@ -105,25 +105,27 @@ int main(void)
   ble_stack_init();
 	friend_storage_init();
   nrf_delay_ms(1000); //wait because fds is doing stuff.
-  print_friends();
+  SEGGER_RTT_WriteString(0, "After FDS init\n");
+	print_friends();
   load_friends(&friends_list);
+	SEGGER_RTT_WriteString(0, "After Load Friends\n");
   print_friends();
   
   if (!has_friends(&friends_list)) {
     init_friends_list(&friends_list);
   }
-  
+  nrf_delay_ms(5000);
+	SEGGER_RTT_WriteString(0, "\n\nAdd, Print, Save Friends\n");
   add_friend(&friends_list);
   print_friends();
-  nrf_delay_ms(1000);
-  
-  print_friends();
-  nrf_delay_ms(1000);
+	save_friends(&friends_list);
+
   
 	for(;;) {
 		nrf_delay_ms(10000);
+		SEGGER_RTT_WriteString(0, "\n\nAdd, Print, Save Friends\n");
     add_friend(&friends_list);
-    nrf_delay_ms(10000);
+		print_friends();
     save_friends(&friends_list);
 #ifndef RTT
 		ret_code_t err_code = sd_app_evt_wait();
